@@ -32,15 +32,22 @@ const renderFallback = (
   </Box>
 );
 
+function ProtectedRoute({ children }: { children: JSX.Element }) {
+  const isAuthenticated = !!localStorage.getItem('role'); 
+  return isAuthenticated ? children : <Navigate to="/sign-in" replace />;
+}
+
 export function Router() {
   return useRoutes([
     {
       element: (
+        <ProtectedRoute>
         <DashboardLayout>
           <Suspense fallback={renderFallback}>
             <Outlet />
           </Suspense>
-        </DashboardLayout>
+          </DashboardLayout>
+          </ProtectedRoute>
       ),
       children: [
         { element: <HomePage />, index: true },
